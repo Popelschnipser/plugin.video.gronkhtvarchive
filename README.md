@@ -1,4 +1,4 @@
-# plugin.video.gronkhtvarchive
+# Gronkh.tv Stream-Archive
 
 Kodi (XBMC) plugin for accessing the stream archive on gronkh.tv
 
