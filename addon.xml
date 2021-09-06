@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.gronkhtvarchive" name="Gronkh.tv Stream Archiv" version="0.0.1" provider-name="Popelschnipser">
+  <requires>
+    <import addon="xbmc.python" version="2.26.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">Your add-on's summary</summary>
+    <description lang="de_DE">Your add-on's description</description>
+    <disclaimer lang="de_DE"></disclaimer>
+    <language>de</language> <!-- the language of the videos or other content the plugin provides, may be omitted in case the addon does not provide any content -->
+    <platform>all</platform>
+    <license>GPL-2.0-or-later</license>
+    <forum>https://forum.kodi.tv/showthread.php?tid=xxxx</forum> <!-- may be omitted  -->
+    <website>http://myplugin.com</website> <!-- the url of the website that contains the videos (or the official website of your plugin). May be omitted.  -->
+    <email>you@youremail.com</email> <!-- may be omitted  -->
+    <source>http://github.com/you/plugin.addon.id</source>
+    <news>v1.2.3 (01/02/201x)
+      [new] some new feature
+      [fix] some fix
+    </news>
+    <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>
