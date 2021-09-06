@@ -14,13 +14,10 @@
     <language>de</language> <!-- the language of the videos or other content the plugin provides, may be omitted in case the addon does not provide any content -->
     <platform>all</platform>
     <license>GPL-2.0-or-later</license>
-    <forum>https://forum.kodi.tv/showthread.php?tid=xxxx</forum> <!-- may be omitted  -->
-    <website>http://myplugin.com</website> <!-- the url of the website that contains the videos (or the official website of your plugin). May be omitted.  -->
-    <email>you@youremail.com</email> <!-- may be omitted  -->
-    <source>http://github.com/you/plugin.addon.id</source>
-    <news>v1.2.3 (01/02/201x)
-      [new] some new feature
-      [fix] some fix
+    <website>https://github.com/Popelschnipser/plugin.video.gronkhtvarchive</website> <!-- the url of the website that contains the videos (or the official website of your plugin). May be omitted.  -->
+    <source>https://github.com/Popelschnipser/plugin.video.gronkhtvarchive</source>
+    <news>v0.0.1 (2021-09-06):
+      [new] initial commit
     </news>
     <assets>
         <icon>icon.png</icon>
