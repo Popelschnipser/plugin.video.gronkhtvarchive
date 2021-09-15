@@ -163,6 +163,7 @@ def search_for_month(page=0, option="None"):
 def search_for_category_list(page=0, option="None"):
     xbmcplugin.setPluginCategory(__handle__, "Kategoriesuche (Liste)")
     xbmcplugin.setContent(__handle__, 'videos')
+    tag_id = ""
     if option == "None":
         all_tags = get_all_tags()
         categories = sorted(list(all_tags.values()))
@@ -179,6 +180,7 @@ def search_for_category_list(page=0, option="None"):
 def search_for_category_freetext(page=0, option="None"):
     xbmcplugin.setPluginCategory(__handle__, "Kategoriesuche (Freitext)")
     xbmcplugin.setContent(__handle__, 'videos')
+    tag_id = ""
     if option == "None":
         key_input = get_keyboard_input()
         if key_input:
@@ -220,9 +222,9 @@ def search_for_month_year(page=0, option="None"):
     xbmcplugin.setContent(__handle__, 'videos')
 
     if option == "None":
-        monate = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
+        months = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
                   "November", "Dezember"]
-        month = get_month_from_id(xbmcgui.Dialog().select("Monat auswaehlen", monate))
+        month = get_month_from_id(xbmcgui.Dialog().select("Monat auswaehlen", months))
     else:
         month = option.split("-")[0]
 
