@@ -10,6 +10,7 @@ if python_version == 2:
 else:
     from urllib.parse import urlencode, parse_qsl
 
+ALL_TAGS_API = "https://api.gronkh.tv/v1/tags/all"
 SEARCH_API = "https://api.gronkh.tv/v1/search"
 PLAYLIST_API = "https://api.gronkh.tv/v1/video/playlist"
 
@@ -39,8 +40,44 @@ def get_all_streams():
     return all_vids
 
 
+def get_streams(search_string=None, tags=None):
+    all_vids = {}
+    params = {}
+    page = 0
+    if search_string:
+        params["query"] = search_string
+    if tags:
+        params["tags"] = ",".join(tags)
+    while True:
+        params.update({"offset": page * 25, "first": 25})
+        r = requests.get(SEARCH_API, params=params)
+        try:
+            vids = r.json()["results"]["videos"]
+            for vid in vids:
+                tags = [tag["title"] for tag in vid["tags"]]
+                all_vids[vid["episode"]] = {"title": vid["title"],
+                                            "length": vid["video_length"],
+                                            "created_at": vid["created_at"][:10],
+                                            "thumbnail": vid["preview_url"],
+                                            "tags": tags
+                                            }
+            page += 1
+        except KeyError:
+            break
+    return all_vids
+
+
 def get_stream_title(stream_dict, episode):
     return stream_dict[episode]["title"].split(" - ", 1)[1]
+
+
+def get_all_tags():
+    r = requests.get(ALL_TAGS_API)
+    if r.status_code == 200:
+        if python_version == 2:
+            return {unicode(item['id']): unicode(item['title']) for item in r.json()}
+        else:
+            return {item['id']: item['title'] for item in r.json()}
 
 
 def get_keyboard_input():
@@ -61,14 +98,14 @@ def get_vid_links(episode):
     playlist_url = r.json()["playlist_url"]
 
     data = requests.get(playlist_url).text
-    current_resolution = ""
+    resolution = ""
     for line in data.split("\n"):
         if line.startswith("#EXT-X-STREAM-INF:") or line.startswith("https"):
             if line.startswith("#EXT-X-STREAM-INF:"):
-                current_resolution = line.split(":")[1].split(",")[-1].split("=")[1].replace('"', "").strip()
+                resolution = line.split(":")[1].split(",")[-1].split("=")[1].replace('"', "").strip()
                 continue
             else:
-                vid_links[current_resolution] = line.strip()
+                vid_links[resolution] = line.strip()
     vid_links["Adaptive"] = playlist_url
 
     return vid_links
@@ -94,18 +131,20 @@ def get_month_from_id(month_id):
     return month
 
 
-# Search categories
+def get_tag_id(all_tags, tag):
+    for key, value in all_tags.items():
+        if tag.lower() == value.lower():
+            return key
+
+
+# Search functions
 def search_for_title():
     xbmcplugin.setPluginCategory(__handle__, "Titelsuche")
     xbmcplugin.setContent(__handle__, 'videos')
     key_input = get_keyboard_input()
     if key_input:
-        all_streams = get_all_streams()
-        found_streams = []
-        for episode, info in all_streams.items():
-            if key_input in info["title"].lower():
-                found_streams.append(episode)
-        create_streamlist(all_streams, sorted(found_streams, reverse=True))
+        streams = get_streams(key_input)
+        create_streamlist(streams, sorted(list(streams.keys()), reverse=True))
 
 
 def search_for_month():
@@ -115,7 +154,7 @@ def search_for_month():
               "November", "Dezember"]
     month = get_month_from_id(xbmcgui.Dialog().select("Monat auswaehlen", months))
     if month != -1:
-        all_streams = get_all_streams()
+        all_streams = get_streams()
         found_streams = []
         for episode, info in all_streams.items():
             if month == get_created_month(info["created_at"]):
@@ -126,21 +165,14 @@ def search_for_month():
 def search_for_category_list():
     xbmcplugin.setPluginCategory(__handle__, "Kategoriesuche (Liste)")
     xbmcplugin.setContent(__handle__, 'videos')
-    all_streams = get_all_streams()
-    categories = set()
-    for episode, info in all_streams.items():
-        tags = info["tags"]
-        for tag in tags:
-            categories.add(tag)
-    categories = sorted(list(categories))
+    all_tags = get_all_tags()
+    categories = sorted(list(all_tags.values()))
     category = xbmcgui.Dialog().select("Kategorie auswaehlen", categories)
     if category != -1:
         category = categories[category]
-        found_streams = []
-        for episode, info in all_streams.items():
-            if category in info["tags"]:
-                found_streams.append(episode)
-        create_streamlist(all_streams, sorted(found_streams, reverse=True))
+        tag_id = get_tag_id(all_tags, category)
+        all_streams = get_streams(tags=[tag_id])
+        create_streamlist(all_streams, sorted(all_streams, reverse=True))
 
 
 def search_for_category_freetext():
@@ -148,18 +180,10 @@ def search_for_category_freetext():
     xbmcplugin.setContent(__handle__, 'videos')
     key_input = get_keyboard_input()
     if key_input:
-        all_streams = get_all_streams()
-        found_streams = []
-        for episode, info in all_streams.items():
-            if python_version == 2:
-                for tag in info["tags"]:
-                    if key_input in tag.lower():
-                        found_streams.append(episode)
-            else:
-                for tag in info["tags"]:
-                    if key_input in tag.lower():
-                        found_streams.append(episode)
-        create_streamlist(all_streams, sorted(found_streams, reverse=True))
+        all_tags = get_all_tags()
+        tag_id = get_tag_id(all_tags, key_input)
+        all_streams = get_streams(tags=[tag_id])
+        create_streamlist(all_streams, sorted(all_streams, reverse=True))
 
 
 def search_for_year():
@@ -168,7 +192,7 @@ def search_for_year():
     key_input = get_keyboard_input()
     if key_input:
         if key_input.isdecimal():
-            all_streams = get_all_streams()
+            all_streams = get_streams()
             found_streams = []
             for episode, info in all_streams.items():
                 if key_input == get_created_year(info["created_at"]):
@@ -187,10 +211,11 @@ def search_for_month_year():
         key_input = get_keyboard_input()
         if key_input:
             if key_input.isdecimal() and month != -1:
-                all_streams = get_all_streams()
+                all_streams = get_streams()
                 found_streams = []
                 for episode, info in all_streams.items():
-                    if key_input == get_created_year(info["created_at"]) and month == get_created_month(info["created_at"]):
+                    if key_input == get_created_year(info["created_at"]) and month == get_created_month(
+                            info["created_at"]):
                         found_streams.append(episode)
                 create_streamlist(all_streams, sorted(found_streams, reverse=True))
 
@@ -209,12 +234,12 @@ def search_menu():
     xbmcplugin.endOfDirectory(__handle__)
 
 
-def all_streams_menu():
+def all_streams_menu(page=0):
     xbmcplugin.setPluginCategory(__handle__, "Vergangene Streams")
     xbmcplugin.setContent(__handle__, 'videos')
     all_streams = get_all_streams()
     sorted_episodes = sorted(all_streams.keys(), reverse=True)
-    create_streamlist(all_streams, sorted_episodes)
+    create_streamlist(all_streams, sorted_episodes, str(page))
 
 
 def main_menu():
@@ -223,7 +248,7 @@ def main_menu():
     items = ["Vergangene Streams", "Streamsuche"]
     for item in items:
         list_item = xbmcgui.ListItem(label=item)
-        url = get_url(action='listing', category=item)
+        url = get_url(action='listing', category=item, page=0)
         is_folder = True
         xbmcplugin.addDirectoryItem(__handle__, url, list_item, is_folder)
     xbmcplugin.addSortMethod(__handle__, xbmcplugin.SORT_METHOD_NONE)
@@ -231,25 +256,37 @@ def main_menu():
 
 
 # Helper functions
-def create_streamlist(all_streams_dict, streams_order):
+def create_streamlist(all_streams_dict, streams_order, page="0"):
+    page = int(page)
     stream_list = []
+    stream_counter = 0
     for episode in streams_order:
-        title = get_stream_title(all_streams_dict, episode)
-        list_item = xbmcgui.ListItem(label=title)
-        list_item.setInfo('video', {'title': 'Stream ' + str(episode) + ": " + title,
-                                    'episode': episode,
-                                    'year': int(all_streams_dict[episode]["created_at"][:4]),
-                                    'duration': int(all_streams_dict[episode]["length"]),
-                                    'genre': 'Games',
-                                    'mediatype': 'Video'})
-        list_item.setArt(
-            {'thumb': all_streams_dict[episode]['thumbnail'],
-             'icon': all_streams_dict[episode]['thumbnail'],
-             'fanart': all_streams_dict[episode]['thumbnail']})
-        list_item.setProperty('IsPlayable', 'true')
-        url = get_url(action='play', video=episode)
-        is_folder = False
+        if page * 25 <= stream_counter < page * 25 + 25:
+            title = get_stream_title(all_streams_dict, episode)
+            list_item = xbmcgui.ListItem(label=title)
+            list_item.setInfo('video', {'title': 'Stream ' + str(episode) + ": " + title,
+                                        'episode': episode,
+                                        'year': int(all_streams_dict[episode]["created_at"][:4]),
+                                        'duration': int(all_streams_dict[episode]["length"]),
+                                        'genre': 'Games',
+                                        'mediatype': 'Video'})
+            list_item.setArt(
+                {'thumb': all_streams_dict[episode]['thumbnail'],
+                 'icon': all_streams_dict[episode]['thumbnail'],
+                 'fanart': all_streams_dict[episode]['thumbnail']})
+            list_item.setProperty('IsPlayable', 'true')
+            url = get_url(action='play', video=episode, page=page)
+            is_folder = False
+            stream_list.append((url, list_item, is_folder))
+
+        stream_counter += 1
+
+    if len(stream_list) == 25:
+        url = get_url(action="listing", category="Vergangene Streams", page=str(page + 1))
+        list_item = xbmcgui.ListItem(label="...")
+        is_folder = True
         stream_list.append((url, list_item, is_folder))
+
     xbmcplugin.addDirectoryItems(__handle__, stream_list)
     xbmcplugin.addSortMethod(__handle__, xbmcplugin.SORT_METHOD_NONE)
     xbmcplugin.endOfDirectory(__handle__)
@@ -270,7 +307,7 @@ def router(paramstring):
     if params:
         if params['action'] == 'listing':
             if params["category"] == "Vergangene Streams":
-                all_streams_menu()
+                all_streams_menu(params["page"])
             elif params["category"] == "Streamsuche":
                 search_menu()
             elif params["category"] == "Titel":
