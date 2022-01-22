@@ -55,7 +55,11 @@ def stream_request(offset=None, tag_id=None):
 
 
 def get_stream_title(stream_dict, episode):
-    return stream_dict[episode]["title"].split(" - ", 1)[1]
+    split_title = stream_dict[episode]["title"].split(" - ", 1)
+    if len(split_title) > 1:
+        return split_title[1]
+    else:
+        return split_title[0]
 
 
 def get_all_tags():
