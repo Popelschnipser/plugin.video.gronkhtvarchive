@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="Einstellungen">
+        <setting label="Bevorzugte Qualität" type="select" id="quality" values="Adaptiv|1080p60|720p|360p|Immer fragen" default="Adaptiv"/>
+    </category>
+</settings>
