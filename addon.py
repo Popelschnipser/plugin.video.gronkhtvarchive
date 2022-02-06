@@ -5,6 +5,19 @@ import xbmcplugin
 import xbmcaddon
 
 addon = xbmcaddon.Addon("plugin.video.gronkhtvarchive")
+months = [addon.getLocalizedString(30009),
+                  addon.getLocalizedString(30010),
+                  addon.getLocalizedString(30011),
+                  addon.getLocalizedString(30012),
+                  addon.getLocalizedString(30013),
+                  addon.getLocalizedString(30014),
+                  addon.getLocalizedString(30015),
+                  addon.getLocalizedString(30016),
+                  addon.getLocalizedString(30017),
+                  addon.getLocalizedString(30018),
+                  addon.getLocalizedString(30019),
+                  addon.getLocalizedString(30020)
+          ]
 python_version = sys.version_info[0]
 if python_version == 2:
     from urllib import urlencode
@@ -102,7 +115,7 @@ def get_vid_links(episode):
                 continue
             else:
                 vid_links[resolution] = line.strip()
-    vid_links["Adaptiv"] = playlist_url
+    vid_links[addon.getLocalizedString(30024)] = playlist_url
 
     return vid_links
 
@@ -137,7 +150,7 @@ def get_tag_id(all_tags, tag):
 # Search functions
 def search_for_title(page=0, option="None"):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Titelsuche")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30002))
     xbmcplugin.setContent(__handle__, 'videos')
     if option == "None":
         key_input = get_keyboard_input()
@@ -154,12 +167,10 @@ def search_for_title(page=0, option="None"):
 
 def search_for_month(page=0, option="None"):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Monatssuche")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30003))
     xbmcplugin.setContent(__handle__, 'videos')
     if option == "None":
-        months = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
-                  "November", "Dezember"]
-        month = get_month_from_id(xbmcgui.Dialog().select("Monat auswaehlen", months))
+        month = get_month_from_id(xbmcgui.Dialog().select(addon.getLocalizedString(30008), months))
     else:
         month = option
     if month != -1:
@@ -173,13 +184,13 @@ def search_for_month(page=0, option="None"):
 
 def search_for_category_list(page=0, option="None"):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Kategoriesuche (Liste)")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30006))
     xbmcplugin.setContent(__handle__, 'videos')
     tag_id = ""
     if option == "None":
         all_tags = get_all_tags()
         categories = sorted(list(all_tags.values()))
-        category = xbmcgui.Dialog().select("Kategorie auswaehlen", categories)
+        category = xbmcgui.Dialog().select(addon.getLocalizedString(30021), categories)
         if category != -1:
             category = categories[category]
             tag_id = get_tag_id(all_tags, category)
@@ -192,7 +203,7 @@ def search_for_category_list(page=0, option="None"):
 
 def search_for_category_freetext(page=0, option="None"):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Kategoriesuche (Freitext)")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30007))
     xbmcplugin.setContent(__handle__, 'videos')
     tag_id = ""
     if option == "None":
@@ -210,7 +221,7 @@ def search_for_category_freetext(page=0, option="None"):
 
 def search_for_year(page=0, option="None"):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Jahressuche")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30004))
     xbmcplugin.setContent(__handle__, 'videos')
     if option == "None":
         key_input = get_keyboard_input()
@@ -234,13 +245,11 @@ def search_for_year(page=0, option="None"):
 
 def search_for_month_year(page=0, option="None"):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Monats- & Jahressuche")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30005))
     xbmcplugin.setContent(__handle__, 'videos')
 
     if option == "None":
-        months = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
-                  "November", "Dezember"]
-        month = get_month_from_id(xbmcgui.Dialog().select("Monat auswaehlen", months))
+        month = get_month_from_id(xbmcgui.Dialog().select(addon.getLocalizedString(30008), months))
     else:
         month = option.split("-")[0]
 
@@ -273,7 +282,7 @@ def search_for_month_year(page=0, option="None"):
 def main_menu():
     xbmcplugin.setPluginCategory(__handle__, '')
     xbmcplugin.setContent(__handle__, 'videos')
-    items = ["Vergangene Streams", "Streamsuche"]
+    items = [addon.getLocalizedString(30000), addon.getLocalizedString(30001)]
     for item in items:
         list_item = xbmcgui.ListItem(label=item)
         url = get_url(action='listing', category=item, page=0)
@@ -285,7 +294,7 @@ def main_menu():
 
 def all_streams_menu(page=0):
     page = int(page)
-    xbmcplugin.setPluginCategory(__handle__, "Vergangene Streams")
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30000))
     xbmcplugin.setContent(__handle__, 'videos')
     all_streams = get_streams(page=page)
     sorted_episodes = sorted(all_streams.keys(), reverse=True)
@@ -293,9 +302,16 @@ def all_streams_menu(page=0):
 
 
 def search_menu():
-    xbmcplugin.setPluginCategory(__handle__, 'Suche')
+    xbmcplugin.setPluginCategory(__handle__, addon.getLocalizedString(30001))
     xbmcplugin.setContent(__handle__, 'videos')
-    items = ["Titel", "Monat", "Jahr", "Monat + Jahr", "Kategorie (Liste)", "Kategorie (Freitext)"]
+    items = [
+        addon.getLocalizedString(30002),
+        addon.getLocalizedString(30003),
+        addon.getLocalizedString(30004),
+        addon.getLocalizedString(30005),
+        addon.getLocalizedString(30006),
+        addon.getLocalizedString(30007)
+    ]
     for item in items:
         list_item = xbmcgui.ListItem(label=item)
         url = get_url(action='listing', category=item, page=0, option="None")
@@ -350,32 +366,38 @@ def create_streamlist(all_streams_dict, streams_order, category, page=0, option=
 def play_video(episode):
     path = get_vid_links(episode)
     quality = addon.getSetting("quality")
-    sort_key = {"Adaptiv": 0, "1080p60": 1, "720p": 2, "360p": 3}
-    quality_err_text = "Bevorzugte Qualitaet ist noch nicht online. Naechstbeste Qualitaet wird genutzt."
+    quality_err_text = addon.getLocalizedString(30026)
 
-    if quality == "Adaptiv":
-        chosen_quality = sort_key["Adaptiv"]
-    elif quality == "1080p60":
+    sort_key = {
+        addon.getLocalizedString(30024): 0,
+        addon.getLocalizedString(30029): 1,
+        addon.getLocalizedString(30030): 2,
+        addon.getLocalizedString(30031): 3
+    }
+
+    if quality == "0":
+        chosen_quality = sort_key[addon.getLocalizedString(30024)]
+    elif quality == "1":
         if "1080p60" in path.keys():
             chosen_quality = list(path.keys()).index("1080p60")
         else:
             dialog = xbmcgui.Dialog()
-            dialog.ok("Gronkh.tv Stream-Archiv", quality_err_text)
+            dialog.ok(addon.getLocalizedString(30027), quality_err_text)
             if "720p" in path.keys():
                 chosen_quality = list(path.keys()).index("720p")
             else:
                 chosen_quality = list(path.keys()).index("360p")
-    elif quality == "720p":
+    elif quality == "2":
         if "720p" in path.keys():
             chosen_quality = list(path.keys()).index("720p")
         else:
             dialog = xbmcgui.Dialog()
-            dialog.ok("Gronkh.tv Stream-Archiv", quality_err_text)
+            dialog.ok(addon.getLocalizedString(30027), quality_err_text)
             chosen_quality = list(path.keys()).index("360p")
-    elif quality == "360p":
+    elif quality == "3":
         chosen_quality = list(path.keys()).index("360p")
     else:
-        chosen_quality = xbmcgui.Dialog().select("Qualitaet auswaehlen", sorted(path.keys(), key=lambda i: sort_key[i]))
+        chosen_quality = xbmcgui.Dialog().select(addon.getLocalizedString(30028), sorted(path.keys(), key=lambda i: sort_key[i]))
 
     if chosen_quality != -1:
         play_item = xbmcgui.ListItem(path=path[list(path.keys())[chosen_quality]])
@@ -386,21 +408,21 @@ def router(paramstring):
     params = dict(parse_qsl(paramstring))
     if params:
         if params['action'] == 'listing':
-            if params["category"] == "Vergangene Streams":
+            if params["category"] == addon.getLocalizedString(30000):
                 all_streams_menu(params["page"])
-            elif params["category"] == "Streamsuche":
+            elif params["category"] == addon.getLocalizedString(30001):
                 search_menu()
-            elif params["category"] == "Titel":
+            elif params["category"] == addon.getLocalizedString(30002):
                 search_for_title(params["page"], params["option"])
-            elif params["category"] == "Monat":
+            elif params["category"] == addon.getLocalizedString(30003):
                 search_for_month(params["page"], params["option"])
-            elif params["category"] == "Jahr":
+            elif params["category"] == addon.getLocalizedString(30004):
                 search_for_year(params["page"], params["option"])
-            elif params["category"] == "Monat + Jahr":
+            elif params["category"] == addon.getLocalizedString(30005):
                 search_for_month_year(params["page"], params["option"])
-            elif params["category"] == "Kategorie (Liste)":
+            elif params["category"] == addon.getLocalizedString(30006):
                 search_for_category_list(params["page"], params["option"])
-            elif params["category"] == "Kategorie (Freitext)":
+            elif params["category"] == addon.getLocalizedString(30007):
                 search_for_category_freetext(params["page"], params["option"])
         elif params['action'] == 'play':
             play_video(params['video'])

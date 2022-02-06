@@ -1,0 +1,143 @@
+# XBMC Media Center language file
+# Addon Provider: Popelschnipser
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: https://github.com/Popelschnipser/plugin.video.gronkhtvarchive\n"
+"POT-Creation-Date: 2022-02-06 HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-02-06 HO:MI+ZONE\n"
+"Last-Translator: Popelschnipser\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Past Streams"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Title"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Month"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Year"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Month + Year"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Category (List)"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Category (Free Text)"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Select Month"
+msgstr ""
+
+msgctxt "#30009"
+msgid "January"
+msgstr ""
+
+msgctxt "#30010"
+msgid "February"
+msgstr ""
+
+msgctxt "#30011"
+msgid "March"
+msgstr ""
+
+msgctxt "#30012"
+msgid "April"
+msgstr ""
+
+msgctxt "#30013"
+msgid "May"
+msgstr ""
+
+msgctxt "#30014"
+msgid "June"
+msgstr ""
+
+msgctxt "#30015"
+msgid "July"
+msgstr ""
+
+msgctxt "#30016"
+msgid "August"
+msgstr ""
+
+msgctxt "#30017"
+msgid "September"
+msgstr ""
+
+msgctxt "#30018"
+msgid "October"
+msgstr ""
+
+msgctxt "#30019"
+msgid "November"
+msgstr ""
+
+msgctxt "#30020"
+msgid "December"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Select Category"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Preferred Quality"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Adaptive"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Always Ask"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Preferred quality is not yet online. Will fall back to next best quality."
+msgstr ""
+
+msgctxt "#30027"
+msgid "Gronkh.tv Stream Archive"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Select Quality"
+msgstr ""
+
+msgctxt "#30029"
+msgid "1080p60"
+msgstr ""
+
+msgctxt "#30030"
+msgid "720p"
+msgstr ""
+
+msgctxt "#30031"
+msgid "360p"
+msgstr ""
